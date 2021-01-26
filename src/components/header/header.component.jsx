@@ -9,6 +9,7 @@ import CartDropdown from './../cart-dropdown/cart-dropdown.components';
 import * as cartActions from './../../redux/cart/cart.actions';
 import * as cartSelectors from './../../redux/cart/cart.selectors';
 import * as userSelectors from './../../redux/user/user.selectors';
+import * as StyledComponents from './header.styles';
 import './header.styles.scss';
 
 const Header = ({
@@ -18,30 +19,30 @@ const Header = ({
 }) => {
     return (
         <div className='header'>
-            <Link className='logo-container' to='/'>
+            <StyledComponents.LogoContainer to='/'>
                 <Logo className='logo' />
-            </Link>
-            <div className='options'>
-                <Link className='option' to='/shop' >
+            </StyledComponents.LogoContainer>
+            <StyledComponents.OptionsContainer>
+                <StyledComponents.OptionLink to='/shop' >
                     SHOP
-                </Link>
-                <Link className='option' to='/contact'>
+                </StyledComponents.OptionLink>
+                <StyledComponents.OptionLink className='option' to='/contact'>
                     CONTACT
-                </Link>
+                </StyledComponents.OptionLink>
                 {currentUser ? (
-                        <div className='option' onClick={() => auth.signOut()}>
+                        <StyledComponents.OptionDiv onClick={() => auth.signOut()}>
                             SIGN OUT
-                        </div>
+                        </StyledComponents.OptionDiv>
                     ) : (
-                        <Link className='option' to='/signin'>
+                        <StyledComponents.OptionLink to='/signin'>
                             SIGN IN
-                        </Link>
+                        </StyledComponents.OptionLink>
                     )
                 }
                 <CartIcon
                     onToggle={toggleCartHidden}
                 />
-            </div>
+            </StyledComponents.OptionsContainer>
             <CartDropdown
                 hidden={cartHidden}
             />
