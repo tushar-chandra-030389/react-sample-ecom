@@ -5,10 +5,12 @@ import rootReducer from './root-reducer';
 
 const middlewares = [
     // logger,
-    
 ];
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const isDevelopment = process.env.NODE_ENV === 'development'; 
+
+const composeEnhancers = isDevelopment ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose : compose;
 
 export const store = createStore(
     rootReducer,
@@ -17,6 +19,8 @@ export const store = createStore(
 
 export const persistor = persistStore(store);
 
-window.$store = store;
+if (isDevelopment) {
+    window.$store = store;
+}
 
 export default { store, persistor };
