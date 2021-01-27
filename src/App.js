@@ -11,9 +11,15 @@ import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUp from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Checkout from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
-import { createUserProfileDocument, auth } from './firebase/firebase.utils';
+import {
+  createUserProfileDocument,
+  auth,
+  addCollectionAndDocuments,
+  getIfHasShopCollections
+} from './firebase/firebase.utils';
 import * as userActions from './redux/user/user.actions';
 import * as userSelectors from './redux/user/user.selectors';
+import SHOP_DATA from './redux/shop/shop.data';
 import './App.css';
 
 class App extends Component {
@@ -41,6 +47,12 @@ class App extends Component {
       this.props.setCurrentUser(null);
 
       console.log('Auth User state changed ', userAuth)
+    });
+    
+    getIfHasShopCollections().then(hasShopCollectionInFireStore => {
+      if (!hasShopCollectionInFireStore) {
+        addCollectionAndDocuments('collections', SHOP_DATA.map(({ title, items }) => ({ title, items })));
+      }
     });
   }
 
