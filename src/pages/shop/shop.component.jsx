@@ -21,7 +21,15 @@ class Shop extends React.Component {
         const { setShopData } = this.props;
         const collectionRef = firestore.collection('collections');
 
-        this.unsubsribeFromSnapshot = collectionRef.onSnapshot(snapshot => {
+        // Observable and Observers pattern
+        // this.unsubsribeFromSnapshot = collectionRef.onSnapshot(snapshot => {
+        //     const collectionMap = convertCollectionsSnapshotToMap(snapshot);
+        //     setShopData(collectionMap);
+        //     this.setState({ isLoading: false });
+        // });
+
+        // promise pattern
+        collectionRef.get().then((snapshot) => {
             const collectionMap = convertCollectionsSnapshotToMap(snapshot);
             setShopData(collectionMap);
             this.setState({ isLoading: false });
