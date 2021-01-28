@@ -17,8 +17,4 @@ const CollectionsOverview = ({
     );
 };
 
-const mapStateToProps = (state, ownProps) => ({
-    collections: shopSelectors.selectShopCollectionsForOverview(state),
-});
-
-export default connect(mapStateToProps)(CollectionsOverview);
+export default CollectionsOverview;

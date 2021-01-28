@@ -5,6 +5,10 @@ import * as shopSelector from '../../redux/shop/shop.selectors';
 import './collection.styles.scss';
 
 const CollectionPage = ({ match, collection }) => {
+    if (!collection) {
+        return null;
+    }
+
     const {
         title,
         items,
@@ -22,20 +26,4 @@ const CollectionPage = ({ match, collection }) => {
     );
 };
 
-const mapStateToProps = (state, ownProps) => {
-    const {
-        match:{
-            params: {
-                collectionId,
-            },
-        },
-    } = ownProps;
-
-    const selectShopCollection = shopSelector.createSelectShopCollection();
-
-    return (state) => ({
-        collection: selectShopCollection(state, collectionId),
-    });
-};
-
-export default connect(mapStateToProps)(CollectionPage);
+export default CollectionPage;

@@ -1,75 +1,52 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
-import CollectionsOverview from './../../components/collections-overview/collections-overview.component';
-import CollectionPage from '../collection/collection.component';  
-import { firestore, convertCollectionsSnapshotToMap } from './../../firebase/firebase.utils';
+import CollectionsOverview from './../../components/collections-overview/collections-overview.container';
+import CollectionPage from '../collection/collection.container'; 
 import * as shopActions from './../../redux/shop/shop.actions';
-import WithSpinner from './../../components/with-spinner/with-spinner.component';
-
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
-const CollectionPageWithSpinner = WithSpinner(CollectionPage);
+import * as shopSelectors from './../../redux/shop/shop.selectors';
 
 class Shop extends React.Component {
-    state = {
-        isLoading: true,
-    };
-
-    unsubsribeFromSnapshot = null;
     
     componentDidMount() {
-        const { setShopData } = this.props;
-        const collectionRef = firestore.collection('collections');
-
-        // Observable and Observers pattern
-        // this.unsubsribeFromSnapshot = collectionRef.onSnapshot(snapshot => {
-        //     const collectionMap = convertCollectionsSnapshotToMap(snapshot);
-        //     setShopData(collectionMap);
-        //     this.setState({ isLoading: false });
-        // });
-
-        // promise pattern
-        collectionRef.get().then((snapshot) => {
-            const collectionMap = convertCollectionsSnapshotToMap(snapshot);
-            setShopData(collectionMap);
-            this.setState({ isLoading: false });
-        });
-    }
-
-    componentWillUnmount() {
-        this.unsubsribeFromSnapshot();
+        const { startShopDataFetch } = this.props;
+        startShopDataFetch();
     }
 
     render() {
-        const { match } = this.props;
-        const { isLoading } = this.state;
+        const { match, isFetching } = this.props;
 
         return (
             <div className='shop-page'>
                 <Route
                     exact
                     path={`${match.path}`}
-                    render={(props) => {
-                        return (<CollectionsOverviewWithSpinner isLoading={isLoading} {...props}/>);
-                    }}
+                    // render={(props) => {
+                    //     return (<CollectionsOverview isLoading={isFetching} {...props}/>);
+                    // }}
+                    component={CollectionsOverview}
                 />
                 <Route
                     path={`${match.path}/:collectionId`}
-                    render={(props) => {
-                        return (<CollectionPageWithSpinner isLoading={isLoading} {...props} />);
-                    }}
+                    component={CollectionPage}
                 />
             </div>
         );
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        isFetching: shopSelectors.selectShopDataFetching(state),
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
-        setShopData(shopData) {
-            dispatch(shopActions.setShopData(shopData));
+        startShopDataFetch() {
+            dispatch(shopActions.fetchingShopDataStart());
         },
     };
 }
 
-export default connect(null, mapDispatchToProps)(Shop);
+export default connect(mapStateToProps, mapDispatchToProps)(Shop);

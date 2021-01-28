@@ -24,3 +24,7 @@ export const createSelectShopCollection = () => {
         }, 
     );
 };
+
+export const selectShopDataFetching = (state) => {
+    return selectShopData(state).isFetching;
+}
