@@ -12,8 +12,6 @@ import SignInAndSignUp from './pages/sign-in-and-sign-up/sign-in-and-sign-up.com
 import Checkout from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
 import {
-  createUserProfileDocument,
-  auth,
   addCollectionAndDocuments,
   getIfHasShopCollections
 } from './firebase/firebase.utils';
@@ -27,37 +25,14 @@ class App extends Component {
     super(props);
   }
 
-  unSubscribeFromAuth = null;
-
   componentDidMount() {
-    this.unSubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if(userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
+    this.props.checkUser();
 
-        userRef.onSnapshot(snapshot => {
-          this.props.setCurrentUser({
-            id: snapshot.id,
-            ...snapshot.data()
-          });
-        });
-
-        return;
-      }
-
-      this.props.setCurrentUser(null);
-
-      console.log('Auth User state changed ', userAuth)
-    });
-    
     getIfHasShopCollections().then(hasShopCollectionInFireStore => {
       if (!hasShopCollectionInFireStore) {
         addCollectionAndDocuments('collections', SHOP_DATA.map(({ title, items }) => ({ title, items })));
       }
     });
-  }
-
-  componentWillUnmount() {
-    this.unSubscribeFromAuth();
   }
 
   render() {
@@ -80,12 +55,10 @@ const mapStateToProps = (state, ownProps) => ({
   currentUser: userSelectors.selectCurrentUser(state),
 });
 
-const mapDispatchToProps = (dispatch, ownProps) =>{
+const mapDispatchToProps = (dispatch) => {
   return {
-    setCurrentUser(user) {
-      dispatch(userActions.setCurrentUser(user))
-    },
-  };
+    checkUser: () =>  dispatch(userActions.checkUserSession()),
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

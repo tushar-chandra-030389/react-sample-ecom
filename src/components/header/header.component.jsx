@@ -7,6 +7,7 @@ import { auth } from './../../firebase/firebase.utils';
 import CartIcon from './../cart-icon/cart-icon.component';
 import CartDropdown from './../cart-dropdown/cart-dropdown.components';
 import * as cartActions from './../../redux/cart/cart.actions';
+import * as userActions from './../../redux/user/user.actions';
 import * as cartSelectors from './../../redux/cart/cart.selectors';
 import * as userSelectors from './../../redux/user/user.selectors';
 import * as StyledComponents from './header.styles';
@@ -16,6 +17,7 @@ const Header = ({
     currentUser,
     cartHidden,
     toggleCartHidden,
+    signOut,
 }) => {
     return (
         <div className='header'>
@@ -30,7 +32,7 @@ const Header = ({
                     CONTACT
                 </StyledComponents.OptionLink>
                 {currentUser ? (
-                        <StyledComponents.OptionDiv onClick={() => auth.signOut()}>
+                    <StyledComponents.OptionDiv onClick={signOut}>
                             SIGN OUT
                         </StyledComponents.OptionDiv>
                     ) : (
@@ -59,6 +61,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         toggleCartHidden() {
             dispatch(cartActions.toggleCartHidden())
+        },
+        signOut() {
+            dispatch(userActions.signOutStart());
         }
     }
 };
