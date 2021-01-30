@@ -20,36 +20,34 @@ import * as userSelectors from './redux/user/user.selectors';
 import SHOP_DATA from './redux/shop/shop.data';
 import './App.css';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    this.props.checkUser();
+const App = ({
+  currentUser,
+  checkUser
+}) => {
+  React.useEffect(() => {
+    checkUser();
 
     getIfHasShopCollections().then(hasShopCollectionInFireStore => {
       if (!hasShopCollectionInFireStore) {
         addCollectionAndDocuments('collections', SHOP_DATA.map(({ title, items }) => ({ title, items })));
       }
     });
-  }
+  }, [checkUser, getIfHasShopCollections]);
 
-  render() {
-    return <div className='App'>
-      <Header />
-      <Switch>
-        <Route exact path='/' component={HomePage} />
-        <Route path='/shop' component={ShopPage} />
-        <Route exact path='/checkout' component={Checkout} />
-        <Route
-          exact
-          path='/signin'
-          render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInAndSignUp />)}/>
-      </Switch>
-    </div>;
-  }
-}
+  return <div className='App'>
+    <Header />
+    <Switch>
+      <Route exact path='/' component={HomePage} />
+      <Route path='/shop' component={ShopPage} />
+      <Route exact path='/checkout' component={Checkout} />
+      <Route
+        exact
+        path='/signin'
+        render={() => currentUser ? (<Redirect to='/' />) : (<SignInAndSignUp />)} />
+    </Switch>
+  </div>;
+
+};
 
 const mapStateToProps = (state, ownProps) => ({
   currentUser: userSelectors.selectCurrentUser(state),

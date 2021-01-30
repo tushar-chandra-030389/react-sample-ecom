@@ -5,8 +5,6 @@ import { firestore, convertCollectionsSnapshotToMap } from './../../firebase/fir
 
 
 export function* fetchCollections() {
-    yield console.log('fired');
-
     const collectionRef = firestore.collection('collections');
 
     // promise pattern

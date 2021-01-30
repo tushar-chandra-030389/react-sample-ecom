@@ -6,34 +6,32 @@ import CollectionPage from '../collection/collection.container';
 import * as shopActions from './../../redux/shop/shop.actions';
 import * as shopSelectors from './../../redux/shop/shop.selectors';
 
-class Shop extends React.Component {
-    
-    componentDidMount() {
-        const { startShopDataFetch } = this.props;
+const Shop = ({
+    match,
+    isFetching,
+    startShopDataFetch,
+}) => {
+    React.useEffect(() => {
         startShopDataFetch();
-    }
+    }, [startShopDataFetch]);
 
-    render() {
-        const { match, isFetching } = this.props;
-
-        return (
-            <div className='shop-page'>
-                <Route
-                    exact
-                    path={`${match.path}`}
-                    // render={(props) => {
-                    //     return (<CollectionsOverview isLoading={isFetching} {...props}/>);
-                    // }}
-                    component={CollectionsOverview}
-                />
-                <Route
-                    path={`${match.path}/:collectionId`}
-                    component={CollectionPage}
-                />
-            </div>
-        );
-    }
-}
+    return (
+        <div className='shop-page'>
+            <Route
+                exact
+                path={`${match.path}`}
+                // render={(props) => {
+                //     return (<CollectionsOverview isLoading={isFetching} {...props}/>);
+                // }}
+                component={CollectionsOverview}
+            />
+            <Route
+                path={`${match.path}/:collectionId`}
+                component={CollectionPage}
+            />
+        </div>
+    );
+};
 
 const mapStateToProps = (state) => {
     return {
