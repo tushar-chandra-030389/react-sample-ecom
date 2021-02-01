@@ -8,6 +8,10 @@ import './collections-overview.styles.scss';
 const CollectionsOverview = ({
     collections
 }) => {
+    if (!collections) {
+        return null;
+    }
+
     return (
         <div className='collections-overview'>
             {collections.map(({ id, ...otherProps }) => {
